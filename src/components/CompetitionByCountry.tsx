@@ -9,12 +9,9 @@ interface IOption {
 }
 
 interface IResult {
-  total_score: number;
-  average_score: number;
-  total_competition_penalty: number;
-  total_task_penalty: number;
-  competitor_name: string;
   competitor_country: string;
+  number_competitors: number;
+  average_score: number;
   position: number;
 }
 
@@ -25,7 +22,7 @@ interface ICompetition {
   competition_description: string;
 }
 
-export default function CompetitionOveralls() {
+export default function CompetitionByCountry() {
   const [options, setOptions] = useState<IOption[]>();
   const [selected, setSelected] = useState<SingleValue<IOption>>();
   const [result, setResult] = useState<IResult[]>([]);
@@ -57,16 +54,13 @@ export default function CompetitionOveralls() {
     async function fetchCompetitionData() {
       if (selected) {
         const { data } = await axios.get(
-          `http://localhost:8000/query/overall_results_competition?competition_id=${selected.value}`
+          `http://localhost:8000/query/overall_results_by_country?competition_id=${selected.value}`
         );
         const results: IResult[] = [];
         data.forEach((value: IResult) => {
           results.push({
-            total_score: value.total_score,
             average_score: value.average_score,
-            total_competition_penalty: value.total_competition_penalty,
-            total_task_penalty: value.total_task_penalty,
-            competitor_name: value.competitor_name,
+            number_competitors: value.number_competitors,
             competitor_country: value.competitor_country,
             position: value.position,
           });
@@ -99,12 +93,9 @@ export default function CompetitionOveralls() {
               <thead className="table-dark">
                 <tr>
                   <th>Position</th>
-                  <th>Competitor Name</th>
                   <th>Competitor Country</th>
-                  <th>Total Score</th>
+                  <th>Number Competitors</th>
                   <th>Average Score</th>
-                  <th>Total Comp Penalty</th>
-                  <th>Total Task Penalty</th>
                 </tr>
               </thead>
               <tbody>
@@ -120,12 +111,9 @@ export default function CompetitionOveralls() {
                         }`}
                       >
                         <td>{user.position}</td>
-                        <td>{user.competitor_name}</td>
                         <td>{user.competitor_country}</td>
-                        <td>{user.total_score}</td>
+                        <td>{user.number_competitors}</td>
                         <td>{user.average_score}</td>
-                        <td>{user.total_competition_penalty}</td>
-                        <td>{user.total_task_penalty}</td>
                       </tr>
                     );
                   })}

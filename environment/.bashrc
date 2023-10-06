@@ -6,8 +6,6 @@ print_color "Setting REQUESTS_CA_BUNDLE" $COLOR_PINK
 export REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
 print_color "Setting LD_LIBRARY_PATH" $COLOR_PINK
 export LD_LIBRARY_PATH=/usr/local/lib
-unset_env_file /home/coder/source/config/.env-local
-export_env_file /home/coder/source/config/.env-local
 echo
 print_color "############################" $COLOR_GREEN
 print_color "#                          #" $COLOR_GREEN
