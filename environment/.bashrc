@@ -6,6 +6,10 @@ print_color "Setting REQUESTS_CA_BUNDLE" $COLOR_PINK
 export REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
 print_color "Setting LD_LIBRARY_PATH" $COLOR_PINK
 export LD_LIBRARY_PATH=/usr/local/lib
+print_color "Loading Pyenv" $COLOR_PINK
+export PATH="/home/coder/.pyenv/bin:$PATH"
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
 echo
 print_color "############################" $COLOR_GREEN
 print_color "#                          #" $COLOR_GREEN

@@ -13,6 +13,7 @@ ENV YARN_VERSION 1.22.19
 ENV NPM_VERSION 9.7.1
 ENV CODE_SERVER_VERSION 4.12.0
 ENV CREDENTIALS_MANAGER_VERSION 2.0.886
+ENV PYTHON_VERSION 3.11.5
 
 # User
 USER root
@@ -132,7 +133,21 @@ RUN apt install -y wget \
     && su coder -c "/opt/credentials-manager/git-credential-manager configure" \
     && su coder -c "git config --global credential.credentialStore plaintext"
 
+# Bump2Version
+USER coder
+RUN cd ${HOME} \
+    && curl https://pyenv.run | bash \
+    && export PATH="${HOME}/.pyenv/bin:${PATH}" \
+    && eval "$(pyenv init -)" \
+    && eval "$(pyenv virtualenv-init -)" \
+    && pyenv install -v ${PYTHON_VERSION} \
+    && pyenv shell ${PYTHON_VERSION} \
+    && pyenv global ${PYTHON_VERSION} \
+    && pip install --upgrade pip \
+    && pip install bump2version
+
 # Setting user ownership and switching user
+USER root
 ADD ./environment/.bashrc ${HOME}/.bashrc
 ADD ./environment/.bashrc /root/.bashrc
 ADD ./environment/init.sh ${HOME}/init.sh

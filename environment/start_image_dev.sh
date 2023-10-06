@@ -12,7 +12,7 @@ run () {
 		-p 9999:9999 \
 		-v ${current_dir}/../:/home/coder/source \
 		--entrypoint /home/coder/init.sh \
-		wmf_scraper_front:0.0.1
+		wmf_scraper_front:0.1.0
 	popd > /dev/null
 }
 
