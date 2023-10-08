@@ -38,7 +38,8 @@ let AddCompetition: React.FC<IProps> = () => {
   let add_competition = (event: React.FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
     async function writeCompetition() {
-      let URL = `http://localhost:8000/competition/add_one?competition_description=${state.competition.competition_description}&competition_url=${state.competition.competition_url}`;
+      let theGoodURL = state.competition.competition_url.replace(/[&]/g, '%26')
+      let URL = `http://localhost:8000/competition/add_one?competition_description=${state.competition.competition_description}&competition_url=${theGoodURL}`;
       axios
         .post(URL)
         .then((response) => {
