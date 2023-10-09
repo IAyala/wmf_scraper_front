@@ -75,7 +75,6 @@ export default function CompetitionOveralls() {
           .post(URL)
           .then((response) => {
             setRequestState("This is good!!");
-            console.log(response.data);
             setReqOk({ is_ok: true });
             setResult(response.data);
           })

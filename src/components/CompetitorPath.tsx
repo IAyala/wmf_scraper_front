@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Select, { SingleValue } from "react-select";
 import axios from "axios";
 import {
@@ -17,11 +17,6 @@ interface IOptionCompetition {
   load_time: Date;
 }
 
-interface IOptionCountry {
-  value: string;
-  label: string;
-}
-
 interface IOptionCompetitor {
   value: string;
   label: string;
@@ -32,10 +27,6 @@ interface ICompetition {
   competition_load_time: string;
   competition_url: string;
   competition_description: string;
-}
-
-interface ICountry {
-  competitor_country: string;
 }
 
 interface ICompetitor {
@@ -56,7 +47,6 @@ interface IResult {
 export default function CompetitorPath() {
   const [optionsCompetition, setOptionsCompetition] =
     useState<IOptionCompetition[]>();
-  const [optionsCountry, setOptionsCountry] = useState<IOptionCountry[]>();
   const [optionsCompetitor, setOptionsCompetitor] =
     useState<IOptionCompetitor[]>();
   const [selectedCompetition, setSelectedCompetition] =
@@ -64,6 +54,9 @@ export default function CompetitorPath() {
   const [selectedCompetitor, setSelectedCompetitor] =
     useState<SingleValue<IOptionCompetitor>>();
   const [result, setResult] = useState<IResult>();
+
+  const [divWidth, setDivWidth] = useState(0); // Initialize the width as 0
+  const myDivRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -85,43 +78,39 @@ export default function CompetitorPath() {
       });
       setOptionsCompetition(results);
     }
+
+    const updateDivWidth = () => {
+      if (myDivRef.current) {
+        const newWidth = myDivRef.current.clientWidth;
+        setDivWidth(newWidth);
+      }
+    };
+
     fetchData();
+    updateDivWidth();
+
+    // Add event listener for window resize
+    window.addEventListener("resize", updateDivWidth);
+
+    // Clean up the event listener on component unmount
+    return () => {
+      window.removeEventListener("resize", updateDivWidth);
+    };
   }, []);
 
   const handleChangeCompetition = (
     selected: SingleValue<IOptionCompetition>
   ) => {
-    async function fetchCountries(selected: SingleValue<IOptionCompetition>) {
+    async function fetchCompetitors(selected: SingleValue<IOptionCompetition>) {
       if (selected) {
         const { data } = await axios.get(
-          `http://localhost:8000/competitor/get_countries_in_competition?competition_id=${selected.value}`
-        );
-        const results: IOptionCountry[] = [];
-        const sorted_data = data.sort((a: ICountry, b: ICountry) =>
-          a.competitor_country.localeCompare(b.competitor_country)
-        );
-        sorted_data.forEach((value: ICountry) => {
-          results.push({
-            value: value.competitor_country,
-            label: value.competitor_country,
-          });
-        });
-        setOptionsCountry(results);
-      }
-    }
-    setSelectedCompetition(selected);
-    fetchCountries(selected);
-  };
-
-  const handleChangeCountry = (selected: SingleValue<IOptionCountry>) => {
-    async function fetchCompetitors(selected: SingleValue<IOptionCountry>) {
-      if (selected && selectedCompetition) {
-        const { data } = await axios.get(
-          `http://localhost:8000/competitor/get_competitors_in_competition_by_country?competition_id=${selectedCompetition.value}&country_name=${selected.value}`
+          `http://localhost:8000/competitor/get_competitors_in_competition?competition_id=${selected.value}`
         );
         const results: IOptionCompetitor[] = [];
-
-        data.forEach((value: ICompetitor) => {
+        const sorted_data = data.sort((a: ICompetitor, b: ICompetitor) =>
+          a.competitor_name.localeCompare(b.competitor_name)
+        );
+        sorted_data.forEach((value: ICompetitor) => {
           results.push({
             value: value.competitor_name,
             label: value.competitor_name,
@@ -130,6 +119,7 @@ export default function CompetitorPath() {
         setOptionsCompetitor(results);
       }
     }
+    setSelectedCompetition(selected);
     fetchCompetitors(selected);
   };
 
@@ -148,7 +138,6 @@ export default function CompetitorPath() {
             })
           ),
         };
-        console.log(result);
         setResult(result);
       }
     }
@@ -159,16 +148,11 @@ export default function CompetitorPath() {
   return (
     <div className="container mt-3">
       <div className="row mt-3">
-        <div className="col">
+        <div className="col" ref={myDivRef}>
           <Select
             options={optionsCompetition}
             onChange={handleChangeCompetition}
           />
-        </div>
-      </div>
-      <div className="row mt-3">
-        <div className="col">
-          <Select options={optionsCountry} onChange={handleChangeCountry} />
         </div>
       </div>
       <div className="row mt-3">
@@ -188,7 +172,7 @@ export default function CompetitorPath() {
           </h5>
         )}
       </div>
-      {result && (
+      {result && optionsCompetitor && (
         <div className="row mt-3">
           <div className="col">
             <div
@@ -196,13 +180,17 @@ export default function CompetitorPath() {
               style={{ width: "100%", height: "400px" }}
             >
               <LineChart
-                width={1300}
-                height={400}
+                width={divWidth - 40}
+                height={Math.max(10 * optionsCompetitor.length, 400)}
                 data={result.competitor_path}
               >
-                <CartesianGrid strokeDasharray="3 3" />
+                <CartesianGrid strokeDasharray="5 5" />
                 <XAxis dataKey="x" />
-                <YAxis domain={[1, "dataMax"]} reversed={true} />
+                <YAxis
+                  domain={[1, optionsCompetitor.length]}
+                  tickCount={optionsCompetitor.length}
+                  reversed={true}
+                />
                 <Tooltip />
                 <Legend />
                 <Line
