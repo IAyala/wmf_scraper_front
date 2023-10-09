@@ -2,9 +2,6 @@ import { useState, useEffect } from "react";
 import React from "react";
 import axios from "axios";
 
-interface IResult {
-  code_version: string;
-}
 interface IProps {}
 
 let About: React.FC<IProps> = () => {

@@ -7,6 +7,7 @@ import CompetitionByCountry from "./components/CompetitionByCountry";
 import TasksResultsCompetitor from "./components/TaskResultsCompetitor";
 import AddCompetition from "./components/AddCompetition";
 import LoadCompetition from "./components/LoadCompetition";
+import CompetitorPath from "./components/CompetitorPath";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path={'/about'} element={<About/>} />
         <Route path={'/overalls_country'} element={<CompetitionByCountry/>} />
         <Route path={'/results_competitor'} element={<TasksResultsCompetitor/>} />
+        <Route path={'/results_path'} element={<CompetitorPath/>} />
       </Routes>
     </React.Fragment>
   );
