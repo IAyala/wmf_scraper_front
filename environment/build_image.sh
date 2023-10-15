@@ -5,7 +5,7 @@ run () {
 	pushd $current_dir > /dev/null
 	buildkit_progress=plain docker build \
 	  -f Dockerfile.dev \
-	  -t wmf_scraper_front:0.1.1 \
+	  -t wmf_scraper_front:1.0.0 \
 	  --progress=plain \
 	  ..
 	popd > /dev/null
