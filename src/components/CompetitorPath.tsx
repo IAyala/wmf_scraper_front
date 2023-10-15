@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import Select, { SingleValue } from "react-select";
+import Select, { SingleValue, MultiValue } from "react-select";
 import axios from "axios";
 import {
   LineChart,
@@ -34,17 +34,28 @@ interface ICompetitor {
   competitor_country: string;
 }
 
-interface IPathElement {
-  x: string;
-  y: number;
+interface IValues {
+  [key: string]: number[] | string[];
+}
+
+interface IValue {
+  [key: string]: number | string;
 }
 
 interface IResult {
-  competitor_name: string;
-  competitor_path: IPathElement[];
+  data: IValue[];
 }
 
 export default function CompetitorPath() {
+  const colours: string[] = [
+    "#0d0c26",
+    "#d78884",
+    "#d3d784",
+    "#84d3d7",
+    "#2b0272",
+    "#74b7e0",
+    "#c8ccd4",
+  ]
   const [optionsCompetition, setOptionsCompetition] =
     useState<IOptionCompetition[]>();
   const [optionsCompetitor, setOptionsCompetitor] =
@@ -52,7 +63,7 @@ export default function CompetitorPath() {
   const [selectedCompetition, setSelectedCompetition] =
     useState<SingleValue<IOptionCompetition>>();
   const [selectedCompetitor, setSelectedCompetitor] =
-    useState<SingleValue<IOptionCompetitor>>();
+    useState<MultiValue<IOptionCompetitor>>();
   const [result, setResult] = useState<IResult>();
 
   const [divWidth, setDivWidth] = useState(0); // Initialize the width as 0
@@ -120,25 +131,41 @@ export default function CompetitorPath() {
       }
     }
     setSelectedCompetition(selected);
+    setSelectedCompetitor([]);
     fetchCompetitors(selected);
   };
 
-  const handleChangeCompetitor = (selected: SingleValue<IOptionCompetitor>) => {
-    async function fetchResults(selected: SingleValue<IOptionCompetitor>) {
+  const handleChangeCompetitor = (selected: MultiValue<IOptionCompetitor>) => {
+    async function fetchResults(selected: MultiValue<IOptionCompetitor>) {
       if (selected && selectedCompetition) {
-        const { data } = await axios.get(
-          `http://localhost:8000/query/position_path_in_competition?competition_id=${selectedCompetition.value}&competitor_name=${selected.value}`
-        );
-        const result: IResult = {
-          competitor_name: selected.value,
-          competitor_path: data.competitor_positions.map(
-            (value: number, index: number) => ({
-              x: `Task ${index + 1}`,
-              y: value,
-            })
-          ),
+        let the_values: IValues = {};
+
+        for (const selectedCompetitor of selected) {
+          const { data } = await axios.get(
+            `http://localhost:8000/query/position_path_in_competition?competition_id=${selectedCompetition.value}&competitor_name=${selectedCompetitor.value}`
+          );
+          the_values[selectedCompetitor.label] = data.competitor_positions;
+          if (!("x" in the_values)) {
+            the_values["x"] = Array.from({
+              length: data.competitor_positions.length,
+            }).map((_, i) => `Task ${i + 1}`);
+          }
+        }
+
+        const result: IValue[] = the_values["x"].map((_, i) => {
+          const newItem: IValue = {};
+          for (const key of Object.keys(the_values)) {
+            newItem[key] = the_values[key][i];
+          }
+          return newItem;
+        });
+
+        const to_set: IResult = {
+          data: result,
         };
-        setResult(result);
+
+        console.log(to_set);
+        setResult(to_set);
       }
     }
     setSelectedCompetitor(selected);
@@ -158,6 +185,8 @@ export default function CompetitorPath() {
       <div className="row mt-3">
         <div className="col">
           <Select
+            isMulti
+            value={selectedCompetitor}
             options={optionsCompetitor}
             onChange={handleChangeCompetitor}
           />
@@ -167,8 +196,7 @@ export default function CompetitorPath() {
         {selectedCompetition && selectedCompetitor && (
           <h5>
             Competition loaded on{" "}
-            {selectedCompetition?.load_time.toString().slice(0, 24)} Results for
-            competitor: {selectedCompetitor.label}
+            {selectedCompetition?.load_time.toString().slice(0, 24)}
           </h5>
         )}
       </div>
@@ -179,28 +207,40 @@ export default function CompetitorPath() {
               className="container"
               style={{ width: "100%", height: "400px" }}
             >
-              <LineChart
-                width={divWidth - 40}
-                height={Math.max(10 * optionsCompetitor.length, 400)}
-                data={result.competitor_path}
-              >
-                <CartesianGrid strokeDasharray="5 5" />
-                <XAxis dataKey="x" />
-                <YAxis
-                  domain={[1, optionsCompetitor.length]}
-                  tickCount={optionsCompetitor.length}
-                  reversed={true}
-                />
-                <Tooltip />
-                <Legend />
-                <Line
-                  type="monotone"
-                  dataKey="y"
-                  stroke="#8884d8"
-                  activeDot={{ r: 6 }}
-                  name={result.competitor_name}
-                />
-              </LineChart>
+              {
+                <LineChart
+                  width={divWidth - 40}
+                  height={Math.max(10 * optionsCompetitor.length, 400)}
+                  data={result.data}
+                >
+                  <CartesianGrid strokeDasharray="5 5" />
+                  <XAxis dataKey="x" />
+                  <YAxis
+                    // domain={[1, optionsCompetitor.length]}
+                    // tickCount={optionsCompetitor.length}
+                    ticks={Array.from(
+                      { length: optionsCompetitor.length },
+                      (_, i) => i + 1
+                    )}
+                    reversed={true}
+                  />
+                  <Tooltip />
+                  <Legend />
+                  {Object.keys(result.data[0])
+                    .filter((element) => element !== "x")
+                    .map((the_key, index) => {
+                      return (
+                        <Line
+                          type="monotone"
+                          dataKey={the_key}
+                          stroke={colours[index]}
+                          activeDot={{ r: 6 }}
+                          name={the_key}
+                        />
+                      );
+                    })}
+                </LineChart>
+              }
             </div>
           </div>
         </div>
