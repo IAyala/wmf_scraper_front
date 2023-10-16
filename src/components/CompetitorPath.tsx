@@ -10,7 +10,6 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
-import { isConstructorDeclaration } from "typescript";
 
 interface IOptionCompetition {
   value: string;
