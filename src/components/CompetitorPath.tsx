@@ -50,11 +50,10 @@ export default function CompetitorPath() {
   const colours: string[] = [
     "#0d0c26",
     "#d78884",
-    "#d3d784",
+    "#848B00",
     "#84d3d7",
     "#2b0272",
-    "#74b7e0",
-    "#c8ccd4",
+    "#ec040b",
   ];
   const [optionsCompetition, setOptionsCompetition] =
     useState<IOptionCompetition[]>();

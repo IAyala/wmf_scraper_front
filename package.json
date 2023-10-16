@@ -24,6 +24,9 @@
     "react-select": "^5.7.7",
     "recharts": "^2.8.0"
   },
+  "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
+  },
   "scripts": {
     "start": "PORT=10000 react-scripts start",
     "build": "react-scripts build",
