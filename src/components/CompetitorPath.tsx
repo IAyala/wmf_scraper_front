@@ -10,6 +10,7 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
+import { isConstructorDeclaration } from "typescript";
 
 interface IOptionCompetition {
   value: string;
@@ -55,7 +56,7 @@ export default function CompetitorPath() {
     "#2b0272",
     "#74b7e0",
     "#c8ccd4",
-  ]
+  ];
   const [optionsCompetition, setOptionsCompetition] =
     useState<IOptionCompetition[]>();
   const [optionsCompetitor, setOptionsCompetitor] =
@@ -137,7 +138,8 @@ export default function CompetitorPath() {
 
   const handleChangeCompetitor = (selected: MultiValue<IOptionCompetitor>) => {
     async function fetchResults(selected: MultiValue<IOptionCompetitor>) {
-      if (selected && selectedCompetition) {
+      if (selected && selectedCompetition && selected.length > 0) {
+        console.log(selected)
         let the_values: IValues = {};
 
         for (const selectedCompetitor of selected) {
@@ -164,7 +166,6 @@ export default function CompetitorPath() {
           data: result,
         };
 
-        console.log(to_set);
         setResult(to_set);
       }
     }
@@ -207,7 +208,7 @@ export default function CompetitorPath() {
               className="container"
               style={{ width: "100%", height: "400px" }}
             >
-              {
+              {result.data.length > 0 && (
                 <LineChart
                   width={divWidth - 40}
                   height={Math.max(10 * optionsCompetitor.length, 400)}
@@ -216,8 +217,6 @@ export default function CompetitorPath() {
                   <CartesianGrid strokeDasharray="5 5" />
                   <XAxis dataKey="x" />
                   <YAxis
-                    // domain={[1, optionsCompetitor.length]}
-                    // tickCount={optionsCompetitor.length}
                     ticks={Array.from(
                       { length: optionsCompetitor.length },
                       (_, i) => i + 1
@@ -240,7 +239,7 @@ export default function CompetitorPath() {
                       );
                     })}
                 </LineChart>
-              }
+              )}
             </div>
           </div>
         </div>
