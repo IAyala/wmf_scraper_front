@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [Unreleased]
 ------------
 
+[1.0.2] - 2023-10-16
+------------
+Useless code removed
+
 [1.0.1] - 2023-10-16
 ------------
 Avoid crash when removing competitors from the competitor path combobox
@@ -24,7 +28,8 @@ Minor issue when adding a competition. There is some conflict with `&` character
 ------------
 First version of the code already up and running
 
-[Unreleased]: https://github.com/IAyala/wmf_scraper_front/compare/v1.0.1...master
+[Unreleased]: https://github.com/IAyala/wmf_scraper_front/compare/v1.0.2...master
+[1.0.2]: https://github.com/IAyala/wmf_scraper_front/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/IAyala/wmf_scraper_front/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/IAyala/wmf_scraper_front/compare/v0.1.1...v1.0.0
 [0.1.1]: https://github.com/IAyala/wmf_scraper_front/compare/v0.1.0...v0.1.1
