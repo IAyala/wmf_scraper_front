@@ -44,6 +44,11 @@ let Navbar: React.FC<IProps> = () => {
                 </Link>
               </li>
               <li className="nav-item">
+                <Link to={"/rfs_penalties"} className="nav-link">
+                  RFS Penalties
+                </Link>
+              </li>
+              <li className="nav-item">
                 <Link to={"/about"} className="nav-link">
                   About
                 </Link>
