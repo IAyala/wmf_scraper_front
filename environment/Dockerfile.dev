@@ -76,6 +76,11 @@ RUN apt-get --allow-unauthenticated update \
     && mkdir -p ${HOME}/.local/share/code-server/User/ \
     && echo '{"http.proxyStrictSSL": false,"svg.preview.autoShow": true,"svg.preview.mode": "svg","svg.preview.background": "white", "editor.defaultFormatter": "esbenp.prettier-vscode","[typescript]": {"editor.defaultFormatter": "esbenp.prettier-vscode"}}' >> ${HOME}/.local/share/code-server/User/settings.json
 
+RUN --mount=type=secret,id=my_ssh_key \
+    mkdir -p ~/.ssh && \
+    cp /run/secrets/my_ssh_key ~/.ssh/id_rsa && \
+    chmod 600 ~/.ssh/id_rsa
+
 # File Watchers
 RUN echo "fs.inotify.max_user_instances=524288" >> /etc/sysctl.conf \
     && echo "fs.inotify.max_user_watches=524288" >> /etc/sysctl.conf \
@@ -112,7 +117,8 @@ RUN update-ca-certificates \
     && [ -s "$NVM_DIR/bash_completion" ] \
     && \. "$NVM_DIR/bash_completion" \
     && npm install --global npm@${NPM_VERSION} \
-    && npm install --global yarn@${YARN_VERSION}
+    && npm install --global yarn@${YARN_VERSION} \
+    && npm install
 
 # Git config
 RUN git config --global core.eol lf \
