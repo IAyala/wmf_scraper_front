@@ -116,6 +116,7 @@ RUN update-ca-certificates \
     && \. "$NVM_DIR/nvm.sh" \
     && [ -s "$NVM_DIR/bash_completion" ] \
     && \. "$NVM_DIR/bash_completion" \
+    && npm init -y \
     && npm install --global npm@${NPM_VERSION} \
     && npm install --global yarn@${YARN_VERSION} \
     && npm install
