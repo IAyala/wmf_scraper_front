@@ -6,7 +6,7 @@ run () {
 	pushd $current_dir > /dev/null
 	buildkit_progress=plain docker build \
 	  -f Dockerfile.dev \
-	  --secret id=my_ssh_key,src=/home/iayala/.ssh/id_rsa \
+	  --build-arg SSH_KEY="$(cat ${HOME}/.ssh/id_rsa)" \
 	  -t wmf_scraper_front:1.0.1 \
 	  --progress=plain \
 	  ..
