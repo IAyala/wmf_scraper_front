@@ -24,6 +24,10 @@ init_git() {
     popd
 }
 
+init_npm() {
+    npm install
+}
+
 change_permissions() {
     chmod +x -R ${HOME}/source/scripts
 }
@@ -58,6 +62,7 @@ run () {
     source_bashrc
     source_bash_utils
     init_git
+    init_npm
     convert_line_endings
     change_local_ownership
     change_source_ownership
