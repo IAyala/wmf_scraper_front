@@ -7,7 +7,6 @@ export REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
 print_color "Setting LD_LIBRARY_PATH" $COLOR_PINK
 export LD_LIBRARY_PATH=/usr/local/lib
 print_color "Loading Pyenv" $COLOR_PINK
-export PATH="/home/coder/.pyenv/bin:$PATH"
 eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
 echo
@@ -22,3 +21,5 @@ source ${HOME}/.nvm/nvm.sh
 print_color "NODE VERSION = $(node -v)" $COLOR_PINK
 print_color "NPM VERSION = $(npm -v)" $COLOR_PINK
 print_color "YARN VERSION = $(yarn -v)" $COLOR_PINK
+# Add fly to PATH (pyenv is already added by pyenv init above)
+export PATH="/home/coder/.fly/bin:$PATH"
