@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import Select, { SingleValue, MultiValue } from "react-select";
 import axios from "axios";
+import { buildApiUrl, getApiHeaders } from '../config/api';
 import {
   LineChart,
   Line,
@@ -71,7 +72,8 @@ export default function CompetitorPath() {
   useEffect(() => {
     async function fetchData() {
       const { data } = await axios.get(
-        "http://127.0.0.1:8000/competition/get_all_competitions"
+        buildApiUrl("/competition/get_all_competitions"),
+        { headers: getApiHeaders() }
       );
       const results: IOptionCompetition[] = [];
       const sorted_data = data.sort(
@@ -114,7 +116,8 @@ export default function CompetitorPath() {
     async function fetchCompetitors(selected: SingleValue<IOptionCompetition>) {
       if (selected) {
         const { data } = await axios.get(
-          `http://localhost:8000/competitor/get_competitors_in_competition?competition_id=${selected.value}`
+          buildApiUrl(`/competitor/get_competitors_in_competition?competition_id=${selected.value}`),
+          { headers: getApiHeaders() }
         );
         const results: IOptionCompetitor[] = [];
         const sorted_data = data.sort((a: ICompetitor, b: ICompetitor) =>
@@ -142,7 +145,8 @@ export default function CompetitorPath() {
 
         for (const selectedCompetitor of selected) {
           const { data } = await axios.get(
-            `http://localhost:8000/query/position_path_in_competition?competition_id=${selectedCompetition.value}&competitor_name=${selectedCompetitor.value}`
+            buildApiUrl(`/query/position_path_in_competition?competition_id=${selectedCompetition.value}&competitor_name=${selectedCompetitor.value}`),
+            { headers: getApiHeaders() }
           );
           the_values[selectedCompetitor.label] = data.competitor_positions;
           if (!("x" in the_values)) {

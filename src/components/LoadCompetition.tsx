@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Select, { SingleValue } from "react-select";
 import axios from "axios";
+import { buildApiUrl, getApiHeaders } from '../config/api';
 
 interface IOption {
   value: string;
@@ -42,7 +43,8 @@ export default function CompetitionOveralls() {
   useEffect(() => {
     async function fetchData() {
       const { data } = await axios.get(
-        "http://127.0.0.1:8000/competition/get_all_competitions"
+        buildApiUrl("/competition/get_all_competitions"),
+        { headers: getApiHeaders() }
       );
       const results: IOption[] = [];
       const sorted_data = data.sort(
@@ -70,9 +72,9 @@ export default function CompetitionOveralls() {
   const handleClick = () => {
     function loadCompetitionData() {
       if (selected) {
-        let URL = `http://localhost:8000/load/load_one_competition?competition_id=${selected.value}`;
+        let URL = buildApiUrl(`/load/load_one_competition?competition_id=${selected.value}`);
         axios
-          .post(URL)
+          .post(URL, {}, { headers: getApiHeaders() })
           .then((response) => {
             setRequestState("This is good!!");
             setReqOk({ is_ok: true });

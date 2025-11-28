@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Select, { SingleValue } from "react-select";
 import axios from "axios";
+import { buildApiUrl, getApiHeaders } from '../config/api';
 
 interface IOption {
   value: string;
@@ -33,7 +34,8 @@ export default function RFSPenalties() {
   useEffect(() => {
     async function fetchData() {
       const { data } = await axios.get(
-        "http://127.0.0.1:8000/competition/get_all_competitions"
+        buildApiUrl("/competition/get_all_competitions"),
+        { headers: getApiHeaders() }
       );
       const results: IOption[] = [];
       const sorted_data = data.sort(
@@ -57,7 +59,8 @@ export default function RFSPenalties() {
     async function fetchCompetitionData() {
       if (selected) {
         const { data } = await axios.get(
-          `http://localhost:8000/query/rfs_penalties?competition_id=${selected.value}`
+          buildApiUrl(`/query/rfs_penalties?competition_id=${selected.value}`),
+          { headers: getApiHeaders() }
         );
         const results: IResult[] = [];
         data.forEach((value: IResult) => {

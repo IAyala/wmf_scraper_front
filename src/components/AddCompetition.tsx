@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { buildApiUrl, getApiHeaders } from '../config/api';
 
 interface ICompetition {
   competition_description: string;
@@ -39,9 +40,9 @@ let AddCompetition: React.FC<IProps> = () => {
     event.preventDefault();
     async function writeCompetition() {
       let theGoodURL = state.competition.competition_url.replace(/[&]/g, '%26')
-      let URL = `http://localhost:8000/competition/add_one?competition_description=${state.competition.competition_description}&competition_url=${theGoodURL}`;
+      let URL = buildApiUrl(`/competition/add_one?competition_description=${state.competition.competition_description}&competition_url=${theGoodURL}`);
       axios
-        .post(URL)
+        .post(URL, {}, { headers: getApiHeaders() })
         .then((response) => {
           setRequestState(
             `Added competition_id: ${response.data.competition_id}`

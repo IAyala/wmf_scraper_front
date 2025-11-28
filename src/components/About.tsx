@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import React from "react";
 import axios from "axios";
+import { buildApiUrl, getApiHeaders } from '../config/api';
 
 interface IProps {}
 
@@ -9,7 +10,9 @@ let About: React.FC<IProps> = () => {
 
   useEffect(() => {
     async function fetchData() {
-      const { data } = await axios.get("http://127.0.0.1:8000/version");
+      const { data } = await axios.get(buildApiUrl("/version"), {
+        headers: getApiHeaders()
+      });
       const result: string = data.code_version;
       setVersion(result);
     }

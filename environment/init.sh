@@ -67,7 +67,6 @@ run () {
     change_local_ownership
     change_source_ownership
     change_permissions
-    su - coder -c "PORT=9999 code-server ${HOME}/source"
 }
 
 run

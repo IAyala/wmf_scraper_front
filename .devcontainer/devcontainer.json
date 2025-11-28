@@ -1,0 +1,62 @@
+{
+	"name": "wmf_scraper_front_ubuntu",
+	"workspaceFolder": "/home/coder/source",
+	"build": {
+		"dockerfile": "Dockerfile.dev",
+		"context": ".."
+	},
+	"customizations": {
+		"vscode": {
+			"settings": {
+				"python.defaultInterpreterPath": "/home/coder/.pyenv/bin",
+				"cSpell.enabled": false,
+				"editor.fontFamily": "'JetBrains Mono', Consolas, 'Courier New', monospace",
+				"editor.fontLigatures": true,
+				"editor.fontSize": 13,
+				"editor.formatOnSave": true,
+				"editor.letterSpacing": 0.4,
+				"editor.tabSize": 2,
+				"editor.smoothScrolling": true,
+				"files.autoSave": "afterDelay",
+				"files.autoSaveDelay": 1000,
+				"git.confirmSync": false,
+				"git.enableSmartCommit": true,
+				"http.proxyStrictSSL": false,
+				"markdown.preview.fontFamily": "'JetBrains Mono', Consolas, 'Courier New', monospace",
+				"workbench.iconTheme": "vs-seti",
+				"workbench.startupEditor": "none"
+			},
+			"extensions": [
+				"ms-python.python",
+				"mhutchie.git-graph",
+				"streetsidesoftware.code-spell-checker",
+				"ms-pyright.pyright",
+				"charliermarsh.ruff",
+				"technicolor-creamsicle.deepdark-material",
+				"cweijan.vscode-mysql-client2",
+				"jock.svg",
+				"PKief.material-icon-theme",
+				"yzhang.markdown-all-in-one",
+				"ms-python.isort",
+				"tamasfe.even-better-toml",
+				"alexcvzz.vscode-sqlite",
+				"bierner.markdown-mermaid",
+				"GitHub.copilot",
+				"GitHub.copilot-chat"
+			]
+		}
+	},
+	"mounts": [
+		"source=${localEnv:HOME}/.ssh,target=/home/coder/.ssh,type=bind,consistency=delegated",
+		"source=${localWorkspaceFolder},target=/home/coder/source,type=bind,consistency=delegated"
+	],
+	"forwardPorts": [
+		10000
+	],
+	"postCreateCommand": "/home/coder/init.sh",
+	"remoteUser": "coder",
+	"runArgs": [
+		"--name",
+		"wmf_scraper_ubuntu_front"
+	]
+}

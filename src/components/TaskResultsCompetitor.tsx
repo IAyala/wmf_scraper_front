@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Select, { SingleValue } from "react-select";
 import axios from "axios";
+import { buildApiUrl, getApiHeaders } from '../config/api';
 
 interface IOptionCompetition {
   value: string;
@@ -61,7 +62,8 @@ export default function TasksResultsCompetitor() {
   useEffect(() => {
     async function fetchData() {
       const { data } = await axios.get(
-        "http://127.0.0.1:8000/competition/get_all_competitions"
+        buildApiUrl("/competition/get_all_competitions"),
+        { headers: getApiHeaders() }
       );
       const results: IOptionCompetition[] = [];
       const sorted_data = data.sort(
@@ -87,7 +89,8 @@ export default function TasksResultsCompetitor() {
     async function fetchCountries(selected: SingleValue<IOptionCompetition>) {
       if (selected) {
         const { data } = await axios.get(
-          `http://localhost:8000/competitor/get_countries_in_competition?competition_id=${selected.value}`
+          buildApiUrl(`/competitor/get_countries_in_competition?competition_id=${selected.value}`),
+          { headers: getApiHeaders() }
         );
         const results: IOptionCountry[] = [];
         const sorted_data = data.sort((a: ICountry, b: ICountry) =>
@@ -110,7 +113,8 @@ export default function TasksResultsCompetitor() {
     async function fetchCompetitors(selected: SingleValue<IOptionCountry>) {
       if (selected && selectedCompetition) {
         const { data } = await axios.get(
-          `http://localhost:8000/competitor/get_competitors_in_competition_by_country?competition_id=${selectedCompetition.value}&country_name=${selected.value}`
+          buildApiUrl(`/competitor/get_competitors_in_competition_by_country?competition_id=${selectedCompetition.value}&country_name=${selected.value}`),
+          { headers: getApiHeaders() }
         );
         const results: IOptionCompetitor[] = [];
 
@@ -130,7 +134,8 @@ export default function TasksResultsCompetitor() {
     async function fetchResults(selected: SingleValue<IOptionCompetitor>) {
       if (selected && selectedCompetition) {
         const { data } = await axios.get(
-          `http://localhost:8000/query/results_competitor_in_competition?competition_id=${selectedCompetition.value}&competitor_name=${selected.value}`
+          buildApiUrl(`/query/results_competitor_in_competition?competition_id=${selectedCompetition.value}&competitor_name=${selected.value}`),
+          { headers: getApiHeaders() }
         );
         const results: IResult[] = [];
         data.forEach((value: IResult) => {
