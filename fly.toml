@@ -8,14 +8,18 @@ primary_region = 'ams'
 console_command = '/bin/bash'
 
 [build]
-  dockerfile = "Dockerfile"
+dockerfile = "Dockerfile"
+[build.args]
+REACT_APP_API_KEY = ""
+REACT_APP_ADMIN_USERNAME = ""
+REACT_APP_ADMIN_PASSWORD = ""
 
 [deploy]
 release_command = 'echo "Application starting..."'
 
 [env]
 ENVIRONMENT = 'production'
-VERSION = '2.0.0'
+VERSION = '2.0.1'
 
 [http_service]
 internal_port = 8080

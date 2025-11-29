@@ -2,12 +2,13 @@
 const isDevelopment = process.env.NODE_ENV === 'development';
 
 export const API_CONFIG = {
-  baseURL: isDevelopment 
-    ? 'http://localhost:8000' 
+  baseURL: isDevelopment
+    ? 'http://localhost:8000'
     : 'https://wmf-scraper.fly.dev',
-  // For production, we'll fetch the API key from the backend or use a different auth method
   apiKey: process.env.REACT_APP_API_KEY
 };
+
+
 
 // Default axios configuration
 export const getApiHeaders = () => {
@@ -15,9 +16,9 @@ export const getApiHeaders = () => {
     'Content-Type': 'application/json'
   };
 
-  // Add API key for production
+  // Add API key for production using Authorization Bearer header
   if (!isDevelopment && API_CONFIG.apiKey) {
-    headers['X-API-Key'] = API_CONFIG.apiKey;
+    headers['Authorization'] = `Bearer ${API_CONFIG.apiKey}`;
   }
 
   return headers;

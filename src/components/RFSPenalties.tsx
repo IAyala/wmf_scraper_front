@@ -118,15 +118,14 @@ export default function RFSPenalties() {
                     return (
                       <tr
                         key={index}
-                        className={`${
-                          user.competitor_country === "Spain"
+                        className={`${user.competitor_country === "Spain"
                             ? "table-info"
                             : penaltySum === 0
-                            ? "table-warning"
-                            : "table-danger"
-                        }`}
+                              ? "table-warning"
+                              : "table-danger"
+                          }`}
                       >
-                        <td>{index+1}</td>
+                        <td>{index + 1}</td>
                         <td>{user.competitor_name}</td>
                         <td>{user.competitor_country}</td>
                         <td>{user.task_number}</td>

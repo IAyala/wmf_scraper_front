@@ -116,11 +116,10 @@ export default function CompetitionOveralls() {
                     return (
                       <tr
                         key={user.position}
-                        className={`${
-                          user.competitor_country === "Spain"
+                        className={`${user.competitor_country === "Spain"
                             ? "table-warning"
                             : ""
-                        }`}
+                          }`}
                       >
                         <td>{user.position}</td>
                         <td>{user.competitor_name}</td>

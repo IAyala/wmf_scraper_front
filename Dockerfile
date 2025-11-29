@@ -9,17 +9,22 @@ WORKDIR /app
 # Copy package files
 COPY package.json package-lock.json* ./
 
-# Install dependencies
-RUN npm ci --only=production --silent
+# Install all dependencies (including devDependencies needed for build)
+RUN npm ci --silent
 
 # Copy source code and configuration files
 COPY src/ ./src/
 COPY public/ ./public/
 COPY tsconfig.json ./
 
-# Accept API key as build argument
-ARG REACT_APP_API_KEY=""
+# Accept build arguments (no defaults for security)
+ARG REACT_APP_API_KEY
+ARG REACT_APP_ADMIN_USERNAME  
+ARG REACT_APP_ADMIN_PASSWORD
+
 ENV REACT_APP_API_KEY=$REACT_APP_API_KEY
+ENV REACT_APP_ADMIN_USERNAME=$REACT_APP_ADMIN_USERNAME
+ENV REACT_APP_ADMIN_PASSWORD=$REACT_APP_ADMIN_PASSWORD
 
 # Build the application
 RUN npm run build

@@ -15,7 +15,7 @@ interface ILoadState {
   is_ok?: boolean;
 }
 
-interface IProps {}
+interface IProps { }
 
 let AddCompetition: React.FC<IProps> = () => {
   let [state, setState] = useState<IState>({

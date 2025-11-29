@@ -3,7 +3,7 @@ import React from "react";
 import axios from "axios";
 import { buildApiUrl, getApiHeaders } from '../config/api';
 
-interface IProps {}
+interface IProps { }
 
 let About: React.FC<IProps> = () => {
   const [version, setVersion] = useState<string>();

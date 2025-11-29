@@ -38,29 +38,52 @@ In production, all API requests include an API key header (`X-API-Key`) for auth
 
 ### Deploy
 
-Run the deployment script with your API key:
+Run the deployment script with your credentials:
 
 ```bash
-./deploy-fly.sh YOUR_PRODUCTION_API_KEY
+./deploy-fly.sh API_KEY ADMIN_USERNAME ADMIN_PASSWORD
+```
+
+Example:
+```bash
+./deploy-fly.sh "your-api-key" "admin" "secure-password-123"
 ```
 
 This script will:
 1. Check if flyctl is installed and you're logged in
-2. Create the Fly.io app (if it doesn't exist)
-3. Set the API_KEY secret in Fly.io
-4. Build and deploy the application
+2. Create the Fly.io app (if it doesn't exist)  
+3. Set secrets in Fly.io (API_KEY, ADMIN_USERNAME, ADMIN_PASSWORD)
+4. Build and deploy the application with secure credentials
 
 ### Manual Deployment
 
 If you prefer manual deployment:
 
-```bash
-flyctl deploy --build-arg REACT_APP_API_KEY="your-production-api-key"
-```
+1. Set the secrets:
+   ```bash
+   flyctl secrets set API_KEY="your-api-key" ADMIN_USERNAME="admin" ADMIN_PASSWORD="secure-password"
+   ```
+
+2. Deploy with build arguments:
+   ```bash
+   flyctl deploy \
+     --build-arg REACT_APP_API_KEY="your-api-key" \
+     --build-arg REACT_APP_ADMIN_USERNAME="admin" \
+     --build-arg REACT_APP_ADMIN_PASSWORD="secure-password"
+   ```
 
 ### Environment Variables
 
 - `REACT_APP_API_KEY`: Build-time API key (passed as Docker build argument)
+- `REACT_APP_ADMIN_USERNAME`: Build-time admin username (passed as Docker build argument)  
+- `REACT_APP_ADMIN_PASSWORD`: Build-time admin password (passed as Docker build argument)
+
+### Security Notes
+
+- Credentials are passed as build arguments (not stored in Dockerfile)
+- Secrets are also stored in Fly.io for reference
+- No default credentials in the Docker image
+- Application will show error if credentials not properly configured
 
 ## Configuration Files
 

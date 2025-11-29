@@ -5,14 +5,16 @@
 
 set -e  # Exit on any error
 
-# Check if API_KEY is provided as argument
-if [ -z "$1" ]; then
-    echo "Usage: $0 <API_KEY>"
-    echo "Example: $0 your-secret-api-key-here"
+# Check if required arguments are provided
+if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ]; then
+    echo "Usage: $0 <API_KEY> <ADMIN_USERNAME> <ADMIN_PASSWORD>"
+    echo "Example: $0 your-secret-api-key admin secure-password"
     exit 1
 fi
 
 API_KEY="$1"
+ADMIN_USERNAME="$2"
+ADMIN_PASSWORD="$3"
 
 # Colors for output
 RED='\033[0;31m'
@@ -59,10 +61,23 @@ check_login() {
     print_success "Authenticated with Fly.io"
 }
 
+# Set secrets
+set_secrets() {
+    print_step "Setting application secrets..."
+    flyctl secrets set \
+        API_KEY="$API_KEY" \
+        ADMIN_USERNAME="$ADMIN_USERNAME" \
+        ADMIN_PASSWORD="$ADMIN_PASSWORD"
+    print_success "Secrets set successfully"
+}
+
 # Deploy application
 deploy() {
     print_step "Deploying to Fly.io..."
-    flyctl deploy --build-arg REACT_APP_API_KEY="$API_KEY"
+    flyctl deploy \
+        --build-arg REACT_APP_API_KEY="$API_KEY" \
+        --build-arg REACT_APP_ADMIN_USERNAME="$ADMIN_USERNAME" \
+        --build-arg REACT_APP_ADMIN_PASSWORD="$ADMIN_PASSWORD"
     print_success "Deployment completed!"
 }
 
@@ -72,7 +87,7 @@ show_info() {
     flyctl status
     echo
     print_step "Your application is available at:"
-    flyctl info --json | grep -o '"hostname":"[^"]*"' | cut -d'"' -f4 | sed 's/^/https:\/\//'
+    echo "https://wmf-scraper-front.fly.dev/"
 }
 
 # Main deployment process
@@ -90,47 +105,12 @@ main() {
         flyctl launch --no-deploy
     fi
     
+    set_secrets
     deploy
     show_info
     
     print_success "🎉 WMF Scraper Front successfully deployed to Fly.io!"
 }
 
-# Parse command line arguments
-case "${1:-deploy}" in
-    "deploy"|"")
-        main
-        ;;
-    "logs")
-        flyctl logs
-        ;;
-    "status")
-        flyctl status
-        ;;
-    "secrets")
-        print_step "Current secrets:"
-        flyctl secrets list
-        ;;
-    "scale")
-        shift
-        flyctl scale $@
-        ;;
-    "help"|"-h"|"--help")
-        echo "WMF Scraper Fly.io Deployment Script"
-        echo
-        echo "Usage: $0 [command]"
-        echo
-        echo "Commands:"
-        echo "  deploy (default)  Deploy the application"
-        echo "  logs             Show application logs"
-        echo "  status           Show application status"
-        echo "  secrets          List current secrets"
-        echo "  scale            Scale the application"
-        echo "  help             Show this help message"
-        ;;
-    *)
-        print_error "Unknown command: $1"
-        echo "Run '$0 help' for usage information"
-        exit 1
-        ;;
-esac
+# Main execution
+main

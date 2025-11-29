@@ -213,12 +213,11 @@ export default function TasksResultsCompetitor() {
                     return (
                       <tr
                         key={result_details.task_order}
-                        className={`${
-                          result_details.task_penalty > 0 ||
-                          result_details.competition_penalty > 0
+                        className={`${result_details.task_penalty > 0 ||
+                            result_details.competition_penalty > 0
                             ? "table-danger"
                             : ""
-                        }`}
+                          }`}
                       >
                         <td>{result_details.task_order}</td>
                         <td>{result_details.task_name}</td>
