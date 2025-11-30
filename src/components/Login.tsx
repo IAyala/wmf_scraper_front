@@ -14,7 +14,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
 
   // Check if user is already logged in
   useEffect(() => {
-    const isLoggedIn = localStorage.getItem('isAuthenticated') === 'true';
+    const isLoggedIn = sessionStorage.getItem('isAuthenticated') === 'true';
     if (isLoggedIn) {
       onLogin(true);
     }
@@ -38,7 +38,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
     }
 
     if (credentials.username === validUsername && credentials.password === validPassword) {
-      localStorage.setItem('isAuthenticated', 'true');
+      sessionStorage.setItem('isAuthenticated', 'true');
       onLogin(true);
     } else {
       setError('Invalid username or password');

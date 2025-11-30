@@ -13,7 +13,7 @@ import Login from "./components/Login";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(
-    localStorage.getItem('isAuthenticated') === 'true'
+    sessionStorage.getItem('isAuthenticated') === 'true'
   );
 
   const handleLogin = (authenticated: boolean) => {
@@ -21,7 +21,7 @@ function App() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('isAuthenticated');
+    sessionStorage.removeItem('isAuthenticated');
     setIsAuthenticated(false);
   };
 

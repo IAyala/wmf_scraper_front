@@ -32,6 +32,23 @@ change_permissions() {
     chmod +x -R ${HOME}/source/scripts
 }
 
+setup_bashrc_symlink() {
+    print_color "Setting up bashrc symlink" $COLOR_PINK
+    # Backup existing .bashrc if it exists and is not already a symlink
+    if [ -f ${HOME}/.bashrc ] && [ ! -L ${HOME}/.bashrc ]; then
+        print_color "Backing up existing .bashrc" $COLOR_YELLOW
+        mv ${HOME}/.bashrc ${HOME}/.bashrc.backup
+    fi
+    
+    # Create symlink to custom bashrc
+    if [ ! -L ${HOME}/.bashrc ]; then
+        print_color "Creating symlink to custom bashrc" $COLOR_GREEN
+        ln -sf ${HOME}/source/environment/.bashrc ${HOME}/.bashrc
+    else
+        print_color "Bashrc symlink already exists" $COLOR_GREEN
+    fi
+}
+
 convert_line_endings() {
     directories_to_convert="${HOME}/source/scripts"
     for directory in ${directories_to_convert}; do
@@ -61,6 +78,7 @@ change_source_ownership() {
 run () {
     source_bashrc
     source_bash_utils
+    setup_bashrc_symlink
     init_git
     init_npm
     convert_line_endings
