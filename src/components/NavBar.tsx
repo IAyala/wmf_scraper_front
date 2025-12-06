@@ -3,9 +3,10 @@ import { Link } from "react-router-dom";
 
 interface IProps {
   onLogout: () => void;
+  userRole: string;
 }
 
-let Navbar: React.FC<IProps> = ({ onLogout }) => {
+let Navbar: React.FC<IProps> = ({ onLogout, userRole }) => {
   const [isCollapsed, setIsCollapsed] = useState(true);
 
   const toggleNavbar = () => {
@@ -34,16 +35,21 @@ let Navbar: React.FC<IProps> = ({ onLogout }) => {
 
           <div className={`collapse navbar-collapse ${!isCollapsed ? 'show' : ''}`} id="navbarNav">
             <ul className="navbar-nav">
-              <li className="nav-item">
-                <Link to={"/add_competition"} className="nav-link" onClick={() => setIsCollapsed(true)}>
-                  Add Competition
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link to={"/load_competition"} className="nav-link" onClick={() => setIsCollapsed(true)}>
-                  Load Competition
-                </Link>
-              </li>
+              {/* Superadmin-only navigation items */}
+              {userRole === 'superadmin' && (
+                <>
+                  <li className="nav-item">
+                    <Link to={"/add_competition"} className="nav-link" onClick={() => setIsCollapsed(true)}>
+                      Add Competition
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link to={"/load_competition"} className="nav-link" onClick={() => setIsCollapsed(true)}>
+                      Load Competition
+                    </Link>
+                  </li>
+                </>
+              )}
               <li className="nav-item">
                 <Link to={"/overalls"} className="nav-link" onClick={() => setIsCollapsed(true)}>
                   Competition Overalls
@@ -76,6 +82,9 @@ let Navbar: React.FC<IProps> = ({ onLogout }) => {
               </li>
             </ul>
             <div className="navbar-nav ms-auto">
+              <span className="navbar-text me-3">
+                Role: <span className="badge bg-secondary">{userRole}</span>
+              </span>
               <button
                 className="btn btn-outline-light btn-sm"
                 onClick={() => {

@@ -6,15 +6,17 @@
 set -e  # Exit on any error
 
 # Check if required arguments are provided
-if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ]; then
-    echo "Usage: $0 <API_KEY> <ADMIN_USERNAME> <ADMIN_PASSWORD>"
-    echo "Example: $0 your-secret-api-key admin secure-password"
+if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ] || [ -z "$4" ] || [ -z "$5" ]; then
+    echo "Usage: $0 <API_KEY> <ADMIN_USERNAME> <ADMIN_PASSWORD> <SUPERADMIN_USERNAME> <SUPERADMIN_PASSWORD>"
+    echo "Example: $0 your-secret-api-key admin secure-password superadmin super-secure-password"
     exit 1
 fi
 
 API_KEY="$1"
 ADMIN_USERNAME="$2"
 ADMIN_PASSWORD="$3"
+SUPERADMIN_USERNAME="$4"
+SUPERADMIN_PASSWORD="$5"
 
 # Colors for output
 RED='\033[0;31m'
@@ -67,7 +69,9 @@ set_secrets() {
     flyctl secrets set \
         API_KEY="$API_KEY" \
         ADMIN_USERNAME="$ADMIN_USERNAME" \
-        ADMIN_PASSWORD="$ADMIN_PASSWORD"
+        ADMIN_PASSWORD="$ADMIN_PASSWORD" \
+        SUPERADMIN_USERNAME="$SUPERADMIN_USERNAME" \
+        SUPERADMIN_PASSWORD="$SUPERADMIN_PASSWORD"
     print_success "Secrets set successfully"
 }
 
@@ -77,7 +81,9 @@ deploy() {
     flyctl deploy \
         --build-arg REACT_APP_API_KEY="$API_KEY" \
         --build-arg REACT_APP_ADMIN_USERNAME="$ADMIN_USERNAME" \
-        --build-arg REACT_APP_ADMIN_PASSWORD="$ADMIN_PASSWORD"
+        --build-arg REACT_APP_ADMIN_PASSWORD="$ADMIN_PASSWORD" \
+        --build-arg REACT_APP_SUPERADMIN_USERNAME="$SUPERADMIN_USERNAME" \
+        --build-arg REACT_APP_SUPERADMIN_PASSWORD="$SUPERADMIN_PASSWORD"
     print_success "Deployment completed!"
 }
 

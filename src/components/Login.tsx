@@ -25,20 +25,31 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
     setLoading(true);
     setError('');
 
-    // Simple client-side authentication (you can make this more secure)
-    // In production, you'd validate against a backend endpoint
-    const validUsername = process.env.REACT_APP_ADMIN_USERNAME;
-    const validPassword = process.env.REACT_APP_ADMIN_PASSWORD;
+    // Role-based authentication
+    const adminUsername = process.env.REACT_APP_ADMIN_USERNAME;
+    const adminPassword = process.env.REACT_APP_ADMIN_PASSWORD;
+    const superAdminUsername = process.env.REACT_APP_SUPERADMIN_USERNAME;
+    const superAdminPassword = process.env.REACT_APP_SUPERADMIN_PASSWORD;
 
     // Security check - ensure credentials were provided at build time
-    if (!validUsername || !validPassword) {
-      setError('Application not properly configured. Missing admin credentials.');
+    if (!adminUsername || !adminPassword || !superAdminUsername || !superAdminPassword) {
+      setError('Application not properly configured. Missing user credentials.');
       setLoading(false);
       return;
     }
 
-    if (credentials.username === validUsername && credentials.password === validPassword) {
+    let userRole = null;
+
+    if (credentials.username === superAdminUsername && credentials.password === superAdminPassword) {
+      userRole = 'superadmin';
+    } else if (credentials.username === adminUsername && credentials.password === adminPassword) {
+      userRole = 'admin';
+    }
+
+    if (userRole) {
       sessionStorage.setItem('isAuthenticated', 'true');
+      sessionStorage.setItem('userRole', userRole);
+      sessionStorage.setItem('username', credentials.username);
       onLogin(true);
     } else {
       setError('Invalid username or password');

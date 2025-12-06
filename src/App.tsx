@@ -16,13 +16,21 @@ function App() {
     sessionStorage.getItem('isAuthenticated') === 'true'
   );
 
+  const [userRole, setUserRole] = useState(
+    sessionStorage.getItem('userRole') || ''
+  );
+
   const handleLogin = (authenticated: boolean) => {
     setIsAuthenticated(authenticated);
+    setUserRole(sessionStorage.getItem('userRole') || '');
   };
 
   const handleLogout = () => {
     sessionStorage.removeItem('isAuthenticated');
+    sessionStorage.removeItem('userRole');
+    sessionStorage.removeItem('username');
     setIsAuthenticated(false);
+    setUserRole('');
   };
 
   if (!isAuthenticated) {
@@ -31,10 +39,17 @@ function App() {
 
   return (
     <React.Fragment>
-      <Navbar onLogout={handleLogout} />
+      <Navbar onLogout={handleLogout} userRole={userRole} />
       <Routes>
-        <Route path={'/add_competition'} element={<AddCompetition />} />
-        <Route path={'/load_competition'} element={<LoadCompetition />} />
+        {/* Superadmin-only routes */}
+        {userRole === 'superadmin' && (
+          <>
+            <Route path={'/add_competition'} element={<AddCompetition />} />
+            <Route path={'/load_competition'} element={<LoadCompetition />} />
+          </>
+        )}
+
+        {/* Routes available to both admin and superadmin */}
         <Route path={'/overalls'} element={<CompetitionOveralls />} />
         <Route path={'/about'} element={<About />} />
         <Route path={'/overalls_country'} element={<CompetitionByCountry />} />
